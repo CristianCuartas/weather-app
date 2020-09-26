@@ -10,7 +10,7 @@ const cities = [
 test('CityList renders', async () => {
   const { findAllByRole } = render(<CityList cities={cities} />);
 
-  const listCities = await findAllByRole('listitem');
+  const listCities = await findAllByRole('button');
 
   expect(listCities).toHaveLength(2);
 });
@@ -22,7 +22,7 @@ test('CityList click on item', async () => {
   const { findAllByRole } = render(
     <CityList cities={cities} onClickCity={fnClickOnItem} />
   );
-  const items = await findAllByRole('listitem');
+  const items = await findAllByRole('button');
   //Utilizar fireEvet para simulr la acción libreria testing-librry/react
   fireEvent.click(items[0]);
   expect(fnClickOnItem).toHaveBeenCalledTimes(1);

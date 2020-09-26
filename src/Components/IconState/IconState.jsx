@@ -8,7 +8,8 @@ import {
   WiRain,
 } from 'react-icons/wi';
 
-const validValues = ['cloud', 'cloudy', 'fog', 'sunny', 'rain'];
+export const validValues = ['cloud', 'cloudy', 'fog', 'sunny', 'rain'];
+
 const stateByName = {
   cloud: WiCloud,
   cloudy: WiDayCloudy,
