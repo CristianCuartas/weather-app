@@ -8,17 +8,17 @@ test('ForecastItem render', async () => {
       weekDay={'Lunes'}
       hour={15}
       temperature={20}
-      state={'sunny'}
+      state={'clear'}
     />
   );
 
   const weekDay = await findByText(/Lunes/);
   const hour = await findByText(/15/);
   const temperature = await findByText(/20/);
-  const state = await findByText(/sunny/);
+  const state = await findByText(/clear/);
 
   expect(weekDay).toHaveTextContent('Lunes');
   expect(hour).toHaveTextContent('15');
   expect(temperature).toHaveTextContent('20');
-  expect(state).toHaveTextContent('sunny');
+  expect(state).toHaveTextContent('clear');
 });

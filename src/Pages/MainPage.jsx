@@ -1,12 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
-import { Button } from '@material-ui/core';
+import Paper from '@material-ui/core/Paper';
+import AppFrame from './../Components/AppFrame';
 import CityList from '../Components/CityList';
 
 const cities = [
-  { city: 'Bogotá', country: 'Colombia' },
-  { city: 'Buenos Aires', country: 'Argentina' },
+  { city: 'Bogotá', country: 'Colombia', countryCode: 'CO' },
+  { city: 'Buenos Aires', country: 'Argentina', countryCode: 'AR' },
 ];
 
 const MainPage = (props) => {
@@ -16,12 +16,12 @@ const MainPage = (props) => {
     history.push('/city');
   };
   return (
-    <div>
-      <CityList cities={cities} onClickCity={onClickHandler} />
-    </div>
+    <AppFrame>
+      <Paper elevation={3}>
+        <CityList cities={cities} onClickCity={onClickHandler} />
+      </Paper>
+    </AppFrame>
   );
 };
-
-MainPage.propTypes = {};
 
 export default MainPage;

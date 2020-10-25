@@ -3,12 +3,15 @@ import { render, fireEvent } from '@testing-library/react';
 import CityList from './CityList';
 
 const cities = [
-  { city: 'Bogotá', country: 'Colombia' },
-  { city: 'Buenos Aires', country: 'Argentina' },
+  { city: 'Bogotá', country: 'Colombia', countryCode: 'CO' },
+  { city: 'Buenos Aires', country: 'Argentina', countryCode: 'AR' },
 ];
 
 test('CityList renders', async () => {
-  const { findAllByRole } = render(<CityList cities={cities} />);
+  const fnClickOnItem = jest.fn();
+  const { findAllByRole } = render(
+    <CityList cities={cities} onClickCity={fnClickOnItem} />
+  );
 
   const listCities = await findAllByRole('button');
 
