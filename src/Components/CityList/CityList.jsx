@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
-import convertUnits from 'convert-units';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Alert from '@material-ui/lab/Alert';
 import CityInfo from '../CityInfo';
 import Weather from '../Weather';
-
-const getCityCode = (city, countryCode) => `${city}-${countryCode}`;
+import { getCityCode } from '../../Utils/utils';
+import useCityList from '../../Hooks/useCityList';
 
 // li: Tag HTML para  agregar un item
 // renderCityandCountry se va a convertir en un callback
@@ -20,7 +18,7 @@ const renderCityAndCountry = (eventOnClickCity) => {
       <ListItem
         button
         key={getCityCode(city, countryCode)}
-        onClick={eventOnClickCity}
+        onClick={() => eventOnClickCity(city, countryCode)}
       >
         <Grid container justify="center" alignItems="center">
           <Grid item md={9} xs={12}>
@@ -38,48 +36,13 @@ const renderCityAndCountry = (eventOnClickCity) => {
   };
   return renderCityAndCountryInternal;
 };
+
 // cities: Es un arreglo que en sus items tiene la ciudad y el país
 // ul: Tag HTML para listas no ordenadas
-const CityList = ({ cities, onClickCity }) => {
-  const [allWeather, setallWeather] = useState({});
-  const [error, setError] = useState(null);
-  useEffect(() => {
-    const setWeather = async (city, countryCode) => {
-      const appid = '155d8f85aa9b8c0a83c0593cee2a098f';
-      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&appid=${appid}`;
-      try {
-        const response = await axios.get(url);
-        const { data } = response;
-        const temperature = Number(
-          convertUnits(data.main.temp).from('K').to('C').toFixed(0)
-        );
-        const state = data.weather[0].main.toLowerCase();
-        const propName = getCityCode(city, countryCode);
-        const propValue = { temperature, state };
-
-        setallWeather((allWeather) => ({
-          ...allWeather,
-          [propName]: propValue,
-        }));
-      } catch (error) {
-        if (error.response) {
-          //Errores del server
-          setError('Ha ocurrido un error en el servidor del clima');
-        } else if (error.request) {
-          //Errores que suceden por no llegar al server
-          setError('Verifique su conexión a internet');
-        } else {
-          //Errores imprevistos
-          setError('Error al cargar los datos');
-        }
-      }
-    };
-
-    cities.forEach(({ city, countryCode }) => {
-      setWeather(city, countryCode);
-    });
-  }, [cities]);
-
+const CityList = ({ cities, onClickCity, actions, data }) => {
+  const { onSetAllWeather } = actions;
+  const { allWeather } = data;
+  const { error, setError } = useCityList(cities, allWeather, onSetAllWeather);
   return (
     <div>
       {error && (

@@ -1,73 +1,42 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { Grid, LinearProgress } from '@material-ui/core';
 import CityInfo from '../Components/CityInfo';
 import Weather from '../Components/Weather';
 import WeatherDetails from '../Components/WeatherDetails';
 import ForecastChart from '../Components/ForecastChart';
 import Forecast from '../Components/Forecast';
-import { Grid } from '@material-ui/core';
 import AppFrame from '../Components/AppFrame';
+import useCityPage from '../Hooks/useCityPage';
+import useCityList from '../Hooks/useCityList';
+import { getCityCode } from '../Utils/utils';
+import { getCountryNameByCountryCode } from '../Utils/Services/serviceCities';
 
-const dataExample = [
-  {
-    dayHour: 'Lun 28',
-    min: 14,
-    max: 22,
-  },
-  {
-    dayHour: 'Mar 29',
-    min: 18,
-    max: 27,
-  },
+const CityPage = ({ actions, data }) => {
+  const { onSetAllWeather, onSetChartData, onSetForecastItemList } = actions;
+  const { allWeather, allChartData, allForecastItemList } = data;
 
-  {
-    dayHour: 'Mie 30',
-    min: 11,
-    max: 28,
-  },
+  const { city, countryCode } = useCityPage(
+    onSetChartData,
+    onSetForecastItemList,
+    allChartData,
+    allForecastItemList
+  );
 
-  {
-    dayHour: 'Jue 01',
-    min: 9,
-    max: 15,
-  },
+  const cities = useMemo(() => [{ city, countryCode }], [city, countryCode]);
 
-  {
-    dayHour: 'Vie 02',
-    min: 14,
-    max: 22,
-  },
+  useCityList(cities, allWeather, onSetAllWeather);
 
-  {
-    dayHour: 'Sab 03',
-    min: 10,
-    max: 22,
-  },
+  const cityCode = getCityCode(city, countryCode);
+  const weather = allWeather[cityCode];
+  const chartdData = allChartData[cityCode];
+  const forecastItemList = allForecastItemList[cityCode];
 
-  {
-    dayHour: 'Dom 04',
-    min: 7,
-    max: 18,
-  },
-];
+  const country = getCountryNameByCountryCode(countryCode);
 
-const forecastItemListExample = [
-  { hour: 7, state: 'cloud', temperature: 10, weekDay: 'Lunes' },
-  { hour: 9, state: 'rain', temperature: 10, weekDay: 'Martes' },
-  { hour: 12, state: 'sunny', temperature: 10, weekDay: 'Miercoles' },
-  { hour: 15, state: 'fog', temperature: 10, weekDay: 'Jueves' },
-  { hour: 18, state: 'cloudy', temperature: 10, weekDay: 'Viernes' },
-  { hour: 21, state: 'rain', temperature: 10, weekDay: 'Sábado' },
-  { hour: 0, state: 'rain', temperature: 10, weekDay: 'Domingo' },
-];
-const CityPage = (props) => {
-  const city = 'Bogotá';
-  const country = 'Colombia';
-  const state = 'cloudy';
-  const temperature = 20;
-  const wind = 5;
-  const humidity = 80;
-  const data = dataExample;
-  const forecastItemList = forecastItemListExample;
+  const state = weather && weather.state;
+  const temperature = weather && weather.temperature;
+  const wind = weather && weather.wind;
+  const humidity = weather && weather.humidity;
 
   return (
     <AppFrame>
@@ -77,14 +46,18 @@ const CityPage = (props) => {
         </Grid>
         <Grid container item xs={12} justify="center">
           <Weather state={state} temperature={temperature} />
-
-          <WeatherDetails humidity={humidity} wind={wind} />
+          {humidity && wind && (
+            <WeatherDetails humidity={humidity} wind={wind} />
+          )}
+        </Grid>
+        <Grid item>
+          {!chartdData && !forecastItemList && <LinearProgress />}
         </Grid>
         <Grid item xs={12}>
-          <ForecastChart data={data} />
+          {chartdData && <ForecastChart data={chartdData} />}
         </Grid>
         <Grid item xs={12}>
-          <Forecast forecastItemList={forecastItemList} />
+          {forecastItemList && <Forecast forecastItemList={forecastItemList} />}
         </Grid>
       </Grid>
     </AppFrame>
