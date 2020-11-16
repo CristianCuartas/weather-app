@@ -6,12 +6,7 @@ import getChartData from '../Utils/Transform/getChartData';
 import getForecastItemList from '../Utils/Transform/getForecastItemList';
 import { getCityCode } from '../Utils/utils';
 
-const useCityPage = (
-  onSetChartData,
-  onSetForecastItemList,
-  allChartData,
-  allForecastItemList
-) => {
+const useCityPage = (actions, allChartData, allForecastItemList) => {
   const { countryCode, city } = useParams();
 
   useEffect(() => {
@@ -21,9 +16,12 @@ const useCityPage = (
       try {
         const response = await axios.get(url);
         const dataAux = getChartData(response);
+        actions({ type: 'SET_CHART_DATA', payload: { [cityCode]: dataAux } });
         const forecastItemListAux = getForecastItemList(response);
-        onSetChartData({ [cityCode]: dataAux });
-        onSetForecastItemList({ [cityCode]: forecastItemListAux });
+        actions({
+          type: 'SET_FORECAST_ITEM_LIST',
+          payload: { [cityCode]: forecastItemListAux },
+        });
       } catch (error) {
         console.log(error);
       }
@@ -37,14 +35,7 @@ const useCityPage = (
     ) {
       getForecast();
     }
-  }, [
-    city,
-    countryCode,
-    onSetChartData,
-    onSetForecastItemList,
-    allChartData,
-    allForecastItemList,
-  ]);
+  }, [city, countryCode, actions, allChartData, allForecastItemList]);
   return { city, countryCode };
 };
 
