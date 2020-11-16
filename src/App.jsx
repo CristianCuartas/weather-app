@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useReducer } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import WelcomePage from './Pages/WelcomePage';
 import MainPage from './Pages/MainPage';
@@ -6,6 +6,7 @@ import CityPage from './Pages/CityPage';
 import NotFoundPage from './Pages/NotFoundPage';
 
 const App = () => {
+  const [state, dispatch] = useReducer();
   const [allWeather, setAllWeather] = useState({});
   const [allChartData, setChartData] = useState({});
   const [allForecastItemList, setForecastItemList] = useState({});
