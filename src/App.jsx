@@ -6,6 +6,7 @@ import CityPage from './Pages/CityPage';
 import NotFoundPage from './Pages/NotFoundPage';
 
 const App = () => {
+  const reducer = () => {};
   const [state, dispatch] = useReducer();
   const [allWeather, setAllWeather] = useState({});
   const [allChartData, setChartData] = useState({});
